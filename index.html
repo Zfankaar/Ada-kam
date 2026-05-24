@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Ada Kam</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div id="landingPage">
+    <div class="land-bar">
+      <img class="land-logo" src="Ada-Kam.png" alt="Ada Kam">
+      <div class="land-links">
+        <a href="#" onclick="showLogin()">sign in</a>
+        <a href="#" onclick="showSignup()" class="land-join">join</a>
+      </div>
+    </div>
+
+    <div class="land-hero">
+      <div class="hero-inner">
+        <div class="hero-left">
+          <p class="hero-tag">watch &bull; earn &bull; repeat</p>
+          <h1 class="hero-h">Turn ads<br>into income</h1>
+          <p class="hero-p">Earn real money by watching short videos. Instant payout.</p>
+          <button class="hero-btn" onclick="showSignup()">start earning</button>
+        </div>
+        <div class="hero-right">
+          <div class="hero-stat">
+            <strong>14k+</strong>
+            <span>active users</span>
+          </div>
+          <div class="hero-stat">
+            <strong>$340k+</strong>
+            <span>paid out</span>
+          </div>
+          <div class="hero-stat">
+            <strong>4.9</strong>
+            <span>app rating</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-steps">
+      <span>sign up &mdash; watch ads &mdash; withdraw</span>
+    </div>
+  </div>
+
+  <div id="signupPage" class="off">
+    <div class="auth-wrap">
+      <a href="#" class="auth-back" onclick="goHome()">&larr; back</a>
+
+      <div id="step1">
+        <h2>step 1 &mdash; credentials</h2>
+        <input type="email" id="signupEmail" placeholder="email">
+        <input type="password" id="signupPass" placeholder="password (min 8 chars)">
+        <input type="password" id="signupConfirm" placeholder="confirm password">
+        <button onclick="goStep2()">continue</button>
+      </div>
+
+      <div id="step2" class="off">
+        <h2>step 2 &mdash; payment info</h2>
+        <p class="step-note">Select your withdrawal method and enter correct details. This will be used for all payouts.</p>
+        <div class="step-methods">
+          <label class="step-method" onclick="pickMethod('easypaisa')">
+            <input type="radio" name="acctype" value="easypaisa">
+            <span class="step-dot"></span>
+            <span>easypaisa</span>
+          </label>
+          <label class="step-method" onclick="pickMethod('jazzcash')">
+            <input type="radio" name="acctype" value="jazzcash">
+            <span class="step-dot"></span>
+            <span>jazzcash</span>
+          </label>
+          <label class="step-method" onclick="pickMethod('bank')">
+            <input type="radio" name="acctype" value="bank">
+            <span class="step-dot"></span>
+            <span>bank account</span>
+          </label>
+        </div>
+        <input type="text" id="stepAccName" placeholder="account name (as per record)">
+        <input type="text" id="stepAccNum" placeholder="account number / iban">
+        <button onclick="goStep3()">continue</button>
+      </div>
+
+      <div id="step3" class="off">
+        <h2>step 3 &mdash; referral (optional)</h2>
+        <p class="step-note">Enter a referral code if you have one, or skip.</p>
+        <input type="text" id="referCode" placeholder="referral code" class="refer-input">
+        <button onclick="handleRefer()">next</button>
+        <button class="step-skip" onclick="skipRefer()">skip</button>
+        <p id="referMsg" class="refer-msg"></p>
+      </div>
+
+      <p class="auth-switch">member? <a href="#" onclick="showLogin()">sign in</a></p>
+    </div>
+  </div>
+
+  <div id="loginPage" class="off">
+    <div class="auth-wrap">
+      <a href="#" class="auth-back" onclick="goHome()">&larr; back</a>
+      <h2>sign in</h2>
+      <input type="email" id="loginEmail" placeholder="email">
+      <input type="password" id="loginPass" placeholder="password">
+      <button onclick="handleLogin()">sign in</button>
+      <p class="auth-switch">new? <a href="#" onclick="showSignup()">join</a></p>
+    </div>
+  </div>
+
+  <div id="appPage" class="off">
+    <div id="screenHome" class="screen">
+      <div class="screen-h">
+        <img class="screen-name" src="Ada-Kam.png" alt="Ada Kam">
+        <span class="screen-bal" id="balanceDisplay">$0.00</span>
+      </div>
+      <div class="screen-body">
+        <div class="ad-card" id="adBox">
+          <p id="adLabel">tap to watch</p>
+          <p class="ad-cash" id="adEarn">+$0.05</p>
+        </div>
+        <button class="ad-btn" id="watchBtn" onclick="watchAd()">watch ad</button>
+        <p class="ad-time" id="timerDisplay"></p>
+        <div class="ad-history">
+          <h3>history</h3>
+          <div id="earningsList">
+            <p class="empty">no earnings yet</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="screenTasks" class="screen off">
+      <div class="screen-h">
+        <img class="screen-name" src="Ada-Kam.png" alt="Ada Kam">
+        <span class="screen-bal" id="balanceDisplay3">$0.00</span>
+      </div>
+      <div class="screen-body">
+        <div class="task-grid">
+          <div class="task-row" onclick="watchAd()">
+            <span>short video ad</span>
+            <span>+$0.05</span>
+          </div>
+          <div class="task-row">
+            <span>survey ad</span>
+            <span>+$0.10</span>
+          </div>
+          <div class="task-row">
+            <span>interactive ad</span>
+            <span>+$0.08</span>
+          </div>
+          <div class="task-row">
+            <span>rewarded video</span>
+            <span>+$0.12</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="screenWallet" class="screen off">
+      <div class="screen-h">
+        <img class="screen-name" src="Ada-Kam.png" alt="Ada Kam">
+        <span class="screen-bal" id="balanceDisplay4">$0.00</span>
+      </div>
+      <div class="screen-body">
+        <div class="wallet-box" id="walletMain">
+          <p class="amount">$<span id="walletAmount">0.00</span></p>
+          <p class="label">total earnings</p>
+          <button class="withdraw" onclick="openWithdraw()">withdraw</button>
+          <div class="log">
+            <h3>withdraw history</h3>
+            <div id="walletList">
+              <p class="empty">no withdrawals yet</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="withdraw-panel off" id="withdrawPanel">
+          <div class="wp-head">
+            <button class="wp-back" onclick="closeWithdraw()">&larr; back</button>
+            <span class="wp-title">withdraw funds</span>
+          </div>
+          <p class="wp-bal">balance: $<span id="wpBalance">0.00</span></p>
+
+          <div class="wp-methods">
+            <label class="wp-method" onclick="selectMethod('easypaisa')">
+              <input type="radio" name="method" value="easypaisa">
+              <span class="wp-radio"></span>
+              <span>easypaisa</span>
+            </label>
+            <label class="wp-method" onclick="selectMethod('jazzcash')">
+              <input type="radio" name="method" value="jazzcash">
+              <span class="wp-radio"></span>
+              <span>jazzcash</span>
+            </label>
+          </div>
+
+          <input type="text" id="wpAccount" placeholder="account number" class="wp-input">
+          <input type="number" id="wpAmount" placeholder="amount ($)" class="wp-input" min="1">
+          <p class="wp-note" id="wpNote"></p>
+          <button class="wp-send" onclick="sendWithdraw()">send request</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="screenProfile" class="screen off">
+      <div class="screen-h">
+        <img class="screen-name" src="Ada-Kam.png" alt="Ada Kam">
+        <span class="screen-bal" id="balanceDisplay2">$0.00</span>
+      </div>
+      <div class="screen-body">
+        <div class="profile-box off" id="profileSigned">
+          <div class="avatar" id="avatarLetter">G</div>
+          <h2 id="profileName"></h2>
+          <p class="email" id="profileEmail"></p>
+          <div class="stats">
+            <div><strong id="profileAds">0</strong><span>watched</span></div>
+            <div><strong id="profileEarned">$0.00</strong><span>earned</span></div>
+          </div>
+          <button class="action" id="profileBtn"></button>
+        </div>
+        <div class="profile-box" id="profileGuest">
+          <div class="avatar">?</div>
+          <h2>guest</h2>
+          <p class="email">sign in to view your profile</p>
+          <button class="action" onclick="showLogin()">sign in</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab act" id="tabHome" onclick="switchTab('home')">home</button>
+      <button class="tab" id="tabTasks" onclick="switchTab('tasks')">tasks</button>
+      <button class="tab" id="tabWallet" onclick="switchTab('wallet')">wallet</button>
+      <button class="tab" id="tabProfile" onclick="switchTab('profile')">profile</button>
+    </div>
+  </div>
+
+  <div id="toast"></div>
+  <div id="loading">
+    <div class="loading-ring"></div>
+    <p id="loadingText">loading</p>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
