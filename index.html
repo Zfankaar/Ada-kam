@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Ada Kam</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+  <div id="landingPage">
+    <div class="land-bar">
+      <img class="land-logo" src="Ada-Kam.png" alt="Ada Kam">
+      <div class="land-links">
+        <a href="#" onclick="showLogin()">sign in</a>
+        <a href="#" onclick="showSignup()" class="land-join">join</a>
+      </div>
+    </div>
+
+    <div class="land-hero">
+      <div class="hero-inner">
+        <div class="hero-left">
+          <p class="hero-tag">watch &bull; earn &bull; repeat</p>
+          <h1 class="hero-h">Turn ads<br>into income</h1>
+          <p class="hero-p">Earn real money by watching short videos. Instant payout.</p>
+          <button class="hero-btn" onclick="showSignup()">start earning</button>
+        </div>
+        <div class="hero-right">
+          <div class="hero-stat"><strong>14k+</strong> <span>active users</span></div>
+          <div class="hero-stat"><strong>Rs340k+</strong> <span>paid out</span></div>
+          <div class="hero-stat"><strong>4.9</strong> <span>app rating</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-steps">
+      <span>sign up &mdash; watch ads &mdash; withdraw</span>
+    </div>
+  </div>
+
+  <div id="signupPage" class="off">
+    <div class="auth-wrap">
+      <a href="#" class="auth-back" onclick="goHome()">&larr; back</a>
+
+      <div id="step1">
+        <h2>step 1 &mdash; credentials</h2>
+        <input type="email" id="signupEmail" placeholder="email">
+        <div class="pass-wrap"><input type="password" id="signupPass" placeholder="password (min 8 chars)"><span class="pass-toggle" onclick="togglePass('signupPass',this)">show</span></div>
+        <div class="pass-wrap"><input type="password" id="signupConfirm" placeholder="confirm password"><span class="pass-toggle" onclick="togglePass('signupConfirm',this)">show</span></div>
+        <button onclick="goStep2()">continue</button>
+        <p class="auth-switch">member? <a href="#" onclick="showLogin()">sign in</a></p>
+      </div>
+
+      <div id="step2" class="off">
+        <h2 id="step2Heading">step 2 &mdash; payment info</h2>
+        <p class="step-note">Select your withdrawal method and enter correct details. This will be used for all payouts.</p>
+        <div class="step-methods">
+          <label class="step-method" onclick="pickMethod('easypaisa')">
+            <input type="radio" name="acctype" value="easypaisa">
+            <span class="step-dot"></span>
+            <span>easypaisa</span>
+          </label>
+          <label class="step-method" onclick="pickMethod('jazzcash')">
+            <input type="radio" name="acctype" value="jazzcash">
+            <span class="step-dot"></span>
+            <span>jazzcash</span>
+          </label>
+        </div>
+        <input type="text" id="stepAccName" placeholder="account name (as per record)">
+        <input type="text" id="stepAccNum" placeholder="account number / iban">
+        <button onclick="goStep3()">continue</button>
+      </div>
+
+      <div id="step3" class="off">
+        <h2>step 3 &mdash; referral</h2>
+        <p class="step-note">Enter a referral code if you have one, or skip.</p>
+        <input type="text" id="referCode" placeholder="referral code" class="refer-input">
+        <button onclick="handleRefer()">next</button>
+        <button class="step-skip" id="skipBtn" onclick="skipRefer()">skip</button>
+        <p id="referMsg" class="refer-msg"></p>
+      </div>
+
+    </div>
+  </div>
+
+  <div id="loginPage" class="off">
+    <div class="auth-wrap">
+      <a href="#" class="auth-back" onclick="goHome()">&larr; back</a>
+      <h2>sign in</h2>
+        <input type="email" id="loginEmail" placeholder="email">
+        <div class="pass-wrap"><input type="password" id="loginPass" placeholder="password"><span class="pass-toggle" onclick="togglePass('loginPass',this)">show</span></div>
+      <button onclick="handleLogin()">sign in</button>
+      <p class="auth-switch">new? <a href="#" onclick="showSignup()">join</a></p>
+    </div>
+  </div>
+
+  <div id="appPage" class="off">
+    <div id="screenHome" class="screen">
+      <div class="screen-h">
+        <img class="screen-name" src="Ada-Kam.png" alt="Ada Kam">
+        <span class="screen-bal" id="balanceDisplay">Rs0.00</span>
+      </div>
+      <div class="screen-body">
+        <div class="ref-box" id="refBox">
+          <p class="ref-greeting" id="refGreeting">welcome</p>
+          <div class="ref-head">
+            <span class="ref-head-line"></span>
+            <span class="ref-head-label">your referral link</span>
+            <span class="ref-head-line"></span>
+          </div>
+          <p class="ref-code" id="refCodeDisplay">------</p>
+          <p class="ref-url" id="refUrlDisplay">zfankaar.github.io/Ada-kam/#——</p>
+          <button class="ref-copy" onclick="copyRefCode()">copy link</button>
+          <div class="ref-stats">
+            <div><strong id="refCount">0</strong><span>referred</span></div>
+            <div class="ref-stats-div"></div>
+            <div><strong id="refCommission">Rs0.00</strong><span>commission</span></div>
+          </div>
+          <div class="ref-total">
+            <span>total earnings</span>
+            <strong id="refTotalEarned">Rs0.00</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="screenTasks" class="screen off">
+      <div class="screen-h">
+        <img class="screen-name" src="Ada-Kam.png" alt="Ada Kam">
+        <span class="screen-bal" id="balanceDisplay3">Rs0.00</span>
+      </div>
+      <div class="screen-body">
+        <div id="taskMenu">
+          <div class="task-cat" onclick="openTask('ad')">
+            <span>watch ads</span>
+            <span>Rs0.10 each</span>
+          </div>
+          <div class="task-cat" onclick="openTask('register')">
+            <span>registration tasks</span>
+            <span>earn more</span>
+          </div>
+          <div class="task-cat" onclick="openTask('like')">
+            <span>like &amp; share</span>
+            <span>earn more</span>
+          </div>
+          <div class="task-cat" onclick="openTask('review')">
+            <span>review &amp; rate</span>
+            <span>earn more</span>
+          </div>
+          <div class="task-cat" onclick="openTask('youtube')">
+            <span>watch youtube</span>
+            <span>earn more</span>
+          </div>
+          <div class="task-cat-submissions" onclick="openTask('submissions')">
+            <span>my submissions</span>
+            <span>pending / approved / rejected</span>
+          </div>
+        </div>
+
+        <div id="taskAdView" class="off">
+          <div class="task-view-head">
+            <button class="task-view-back" onclick="closeTask('ad')">&larr; back</button>
+            <span class="task-view-title">watch ads</span>
+          </div>
+          <div class="ad-daily" id="adDaily">
+            <div class="ad-daily-top">
+              <span>today's ads</span>
+              <span id="adDailyCount">0 / 50</span>
+            </div>
+            <div class="ad-progress"><div class="ad-progress-fill" id="adProgressFill"></div></div>
+            <div class="ad-daily-bottom">
+              <span>earned today</span>
+              <span id="adDailyEarned">Rs0.00</span>
+            </div>
+          </div>
+          <div class="ad-card" id="adBox">
+            <p id="adLabel">tap to watch</p>
+            <p class="ad-cash" id="adEarn">+Rs0.10</p>
+            <div class="ad-coins" id="adCoins">
+              <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+            </div>
+          </div>
+          <button class="ad-btn" id="watchBtn" onclick="if(pendingClaim){claimAd()}else{watchAd()}">
+            <span class="ad-btn-text">watch ad</span>
+            <span class="ad-btn-bar" id="adBtnBar"></span>
+          </button>
+          <p class="ad-time" id="timerDisplay"></p>
+          <div class="ad-history">
+            <h3>history</h3>
+            <div id="earningsList">
+              <p class="empty">no earnings yet</p>
+            </div>
+          </div>
+        </div>
+
+        <div id="taskRegisterView" class="off">
+          <div class="task-view-head">
+            <button class="task-view-back" onclick="closeTask('register')">&larr; back</button>
+            <span class="task-view-title">registration tasks</span>
+          </div>
+          <div id="regTaskListView">
+            <div class="task-sect">
+              <div id="regTaskListItems"></div>
+            </div>
+          </div>
+          <div id="regTaskDetailView" class="off">
+            <div class="task-view-head">
+              <button class="task-view-back" onclick="backToRegTaskList()">&larr; all tasks</button>
+              <span class="task-view-title" id="regDetailTitle">task</span>
+            </div>
+            <div class="task-sect">
+              <div id="regStep1">
+                <div class="ts-step">
+                  <p class="ts-step-num">step 1 of 2</p>
+                  <p class="ts-step-heading" id="regDetailHeading">complete task</p>
+                  <div class="ts-step-body">
+                    <div id="regVideoArea"></div>
+                    <p class="ts-step-desc">Follow these steps:</p>
+                    <div class="ts-step-list" id="regStepList"></div>
+                    <div class="ts-step-warn">
+                      <p>Make sure your account is fully verified before submitting. Incomplete or fake submissions will be rejected.</p>
+                    </div>
+                  </div>
+                  <button class="ts-btn" id="regStartBtn" onclick="startRegTask()">start task</button>
+                </div>
+              </div>
+              <div id="regStep2" class="off">
+                <div class="ts-step">
+                  <button class="ts-step-back" onclick="backRegStep()">&larr; back to instructions</button>
+                  <p class="ts-step-num">step 2 of 2</p>
+                  <p class="ts-step-heading">submit screenshot</p>
+                  <div class="ts-step-body">
+                    <p class="ts-step-desc" id="regSubmitDesc">Upload your screenshot and enter your User ID.</p>
+                    <div class="ts-file-area">
+                      <input type="file" id="regFileInput" accept="image/png,image/jpeg,image/jpg,image/webp" class="ts-file-input">
+                      <label for="regFileInput" class="ts-file-label" id="regFileLabel">choose screenshot</label>
+                      <p class="ts-file-name" id="regFileName"></p>
+                    </div>
+                    <input type="text" id="regAppUserId" placeholder="enter your User ID" class="ts-input">
+                  </div>
+                  <button class="ts-btn" onclick="submitRegTask()">submit for review</button>
+                  <p class="ts-note" id="regTaskNote"></p>
+                </div>
+              </div>
+              <div class="task-sect-history">
+                <p class="task-sect-label">submissions</p>
+                <div id="regTaskList">
+                  <p class="empty">no submissions yet</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="taskLikeView" class="off">
+          <div class="task-view-head">
+            <button class="task-view-back" onclick="closeTask('like')">&larr; back</button>
+            <span class="task-view-title">like &amp; share</span>
+          </div>
+          <p class="task-coming">coming soon</p>
+        </div>
+
+        <div id="taskReviewView" class="off">
+          <div class="task-view-head">
+            <button class="task-view-back" onclick="closeTask('review')">&larr; back</button>
+            <span class="task-view-title">review &amp; rate</span>
+          </div>
+          <p class="task-coming">coming soon</p>
+        </div>
+
+        <div id="taskYoutubeView" class="off">
+          <div class="task-view-head">
+            <button class="task-view-back" onclick="closeTask('youtube')">&larr; back</button>
+            <span class="task-view-title">watch youtube</span>
+          </div>
+          <p class="task-coming">coming soon</p>
+        </div>
+
+        <div id="taskSubmissionsView" class="off">
+          <div class="task-view-head">
+            <button class="task-view-back" onclick="closeTask('submissions')">&larr; back</button>
+            <span class="task-view-title">my submissions</span>
+          </div>
+          <div class="task-sect">
+            <div class="sub-filter">
+              <span class="sub-filter-item active" data-filter="all" onclick="filterSubmissions('all')">all</span>
+              <span class="sub-filter-item" data-filter="pending" onclick="filterSubmissions('pending')">pending</span>
+              <span class="sub-filter-item" data-filter="approved" onclick="filterSubmissions('approved')">approved</span>
+              <span class="sub-filter-item" data-filter="rejected" onclick="filterSubmissions('rejected')">rejected</span>
+            </div>
+            <div id="submissionsList">
+              <p class="empty">loading...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="screenWallet" class="screen off">
+      <div class="screen-h">
+        <img class="screen-name" src="Ada-Kam.png" alt="Ada Kam">
+        <span class="screen-bal" id="balanceDisplay4">Rs0.00</span>
+      </div>
+      <div class="screen-body">
+        <div class="wallet-box" id="walletMain">
+          <div class="wallet-divider"></div>
+          <p class="amount">Rs<span id="walletAmount">0.00</span></p>
+          <p class="label">total earnings</p>
+          <button class="withdraw" onclick="openWithdraw()">withdraw</button>
+          <div class="log">
+            <h3>withdraw history</h3>
+            <div id="walletList">
+              <p class="empty">no withdrawals yet</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="withdraw-panel off" id="withdrawPanel">
+          <div class="wp-head">
+            <button class="wp-back" onclick="closeWithdraw()">&larr; back</button>
+            <span class="wp-title">withdraw funds</span>
+          </div>
+          <p class="wp-bal">total earnings: Rs<span id="wpBalance">0.00</span></p>
+
+          <div class="wp-info" id="wpInfo">
+            <p class="wp-info-label">payment method</p>
+            <p class="wp-info-type" id="wpAccType"></p>
+            <p class="wp-info-detail"><span id="wpAccName"></span> — <span id="wpAccNum"></span></p>
+            <button class="wp-change" onclick="toggleWpPayEdit()">change</button>
+          </div>
+
+          <div class="wp-pay-edit off" id="wpPayEdit">
+            <p class="wp-pay-title">edit payment info</p>
+            <div class="step-methods" id="wpPayMethods">
+              <label class="step-method" onclick="pickMethodWp('easypaisa')">
+                <input type="radio" name="wppaytype" value="easypaisa">
+                <span class="step-dot"></span>
+                <span>easypaisa</span>
+              </label>
+              <label class="step-method" onclick="pickMethodWp('jazzcash')">
+                <input type="radio" name="wppaytype" value="jazzcash">
+                <span class="step-dot"></span>
+                <span>jazzcash</span>
+              </label>
+            </div>
+            <input type="text" id="wpPayEditName" placeholder="account name" class="wp-input">
+            <input type="text" id="wpPayEditNum" placeholder="account number" class="wp-input">
+            <button class="wp-send" onclick="saveWpPayEdit()">save</button>
+            <button class="step-skip" onclick="cancelWpPayEdit()">cancel</button>
+          </div>
+
+          <input type="number" id="wpAmount" placeholder="amount (Rs)" class="wp-input" min="1">
+          <p class="wp-note" id="wpNote"></p>
+          <button class="wp-send" onclick="sendWithdraw()">send request</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="screenProfile" class="screen off">
+      <div class="screen-h">
+        <img class="screen-name" src="Ada-Kam.png" alt="Ada Kam">
+        <span class="screen-bal" id="balanceDisplay2">Rs0.00</span>
+      </div>
+      <div class="screen-body">
+        <div class="profile-box off" id="profileSigned">
+          <div class="avatar" id="avatarLetter">G</div>
+          <h2 id="profileName"></h2>
+          <p class="email" id="profileEmail"></p>
+          <div class="stats">
+            <div><strong id="profileAds">0</strong><span>ads watched</span></div>
+            <div><strong id="profileEarned">Rs0.00</strong><span>earned</span></div>
+          </div>
+          <div class="profile-pay" id="profilePay">
+            <p class="pay-label">payment info</p>
+            <p class="pay-detail" id="payDetail">—</p>
+            <button class="pay-edit-btn" onclick="togglePayEdit()">change</button>
+          </div>
+          <div class="profile-pay-edit off" id="profilePayEdit">
+            <p class="pay-label">edit payment info</p>
+            <div class="step-methods" id="payMethods">
+              <label class="step-method" onclick="pickMethodPay('easypaisa')">
+                <input type="radio" name="paytype" value="easypaisa">
+                <span class="step-dot"></span>
+                <span>easypaisa</span>
+              </label>
+              <label class="step-method" onclick="pickMethodPay('jazzcash')">
+                <input type="radio" name="paytype" value="jazzcash">
+                <span class="step-dot"></span>
+                <span>jazzcash</span>
+              </label>
+            </div>
+            <input type="text" id="payEditName" placeholder="account name">
+            <input type="text" id="payEditNum" placeholder="account number">
+            <button onclick="savePayEdit()">save</button>
+            <button class="step-skip" onclick="cancelPayEdit()">cancel</button>
+          </div>
+          <div class="profile-links">
+            <div class="profile-link" onclick="showWithdrawHistory()">
+              <span>withdrawal history</span>
+              <span>&rarr;</span>
+            </div>
+            <div class="profile-link" onclick="showHelpSupport()">
+              <span>help &amp; support</span>
+              <span>&rarr;</span>
+            </div>
+          </div>
+          <button class="action" id="profileBtn"></button>
+        </div>
+
+        <div class="profile-panel off" id="panelHistory">
+          <div class="panel-head">
+            <button class="panel-back" onclick="hidePanel('panelHistory')">&larr; back</button>
+            <span class="panel-title">withdrawal history</span>
+          </div>
+          <div id="withdrawHistoryList">
+            <p class="empty">no withdrawals yet</p>
+          </div>
+        </div>
+
+        <div class="profile-panel off" id="panelHelp">
+          <div class="panel-head">
+            <button class="panel-back" onclick="hidePanel('panelHelp')">&larr; back</button>
+            <span class="panel-title">help &amp; support</span>
+          </div>
+          <p class="help-text">For any queries or issues, contact us at:</p>
+          <p class="help-contact">support@adakam.com</p>
+          <p class="help-text">We will get back to you within 24 hours.</p>
+        </div>
+        <div class="profile-box" id="profileGuest">
+          <div class="avatar">?</div>
+          <h2>guest</h2>
+          <p class="email">sign in to view your profile</p>
+          <button class="action" onclick="showLogin()">sign in</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab act" id="tabHome" onclick="switchTab('home')">home</button>
+      <button class="tab" id="tabTasks" onclick="switchTab('tasks')">tasks</button>
+      <button class="tab" id="tabWallet" onclick="switchTab('wallet')">wallet</button>
+      <button class="tab" id="tabProfile" onclick="switchTab('profile')">profile</button>
+    </div>
+  </div>
+
+  <div id="toast"></div>
+  <div id="loading">
+    <div class="loading-ring"></div>
+    <p id="loadingText">loading</p>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
